@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.user;
 //defines the User class with it's corresponding variables
 
 public class User {

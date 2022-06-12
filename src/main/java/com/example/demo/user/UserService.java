@@ -1,26 +1,18 @@
-package com.example.demo;
+package com.example.demo.user;
 
-import com.google.api.client.auth.oauth.OAuthGetAccessToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.example.demo.user.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
-import com.google.firebase.auth.internal.FirebaseTokenFactory;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.database.connection.ConnectionAuthTokenProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
