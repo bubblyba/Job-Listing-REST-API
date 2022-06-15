@@ -14,7 +14,7 @@ public class Controller {
     UserService userService;
     //creates a new user with the given email, password, and usertype
     //checks if the user already exists
-    @GetMapping("/createUser")
+    @PostMapping("/createUser")
     public String createUser(@RequestBody User user ) throws InterruptedException, ExecutionException, FirebaseAuthException {
         return userService.addUser(user);
     }
