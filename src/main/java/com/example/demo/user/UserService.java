@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -113,6 +114,17 @@ public class UserService {
             }
         }
 
+    }
+    public String generateCustomToken(String email) throws FirebaseAuthException {
+        mAuth = FirebaseAuth.getInstance();
+        return(mAuth.createCustomToken(email));
+
+
+    }
+    public Token generateToken(String email) throws FirebaseAuthException {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Token token = new Token(generateCustomToken(email),"bearer",email,localDateTime,localDateTime.plusMinutes(15));
+        return token;
     }
 }
 

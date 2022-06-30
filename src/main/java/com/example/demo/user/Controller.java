@@ -27,15 +27,24 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) throws FirebaseAuthException, ExecutionException, InterruptedException, IOException {
+    public Token login(@RequestBody User user) throws FirebaseAuthException, ExecutionException, InterruptedException, IOException {
+        if(userService.userLogin(user.getEmail(),user.getPassword()).equals("Login Success")){
+            return userService.generateToken(user.getEmail());
+        }
+        else{
+            Token token = new Token();
+            token.setUsername("Invalid Credentials");
+            return token;
 
-        return userService.userLogin(user.getEmail(),user.getPassword());
+        }
+
     }
     @GetMapping("/getEmailVerificationLink")
     public String getLink(@RequestBody String email) throws FirebaseAuthException {
 
         return userService.generateEmailLink(email);
     }
+
 
 
     }
