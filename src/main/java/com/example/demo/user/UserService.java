@@ -140,8 +140,8 @@ public class UserService {
             Firestore dbFirestore = FirestoreClient.getFirestore();
 
             Map<String, Object> docData = new HashMap<>();
-            docData.put("expires", token.getExpires());
-            docData.put("issued", token.getIssued());
+            docData.put("expires", String.valueOf(token.getExpires()));
+            docData.put("issued", String.valueOf(token.getIssued()));
             docData.put("token", token.getAccessToken());
             docData.put("tokenType", token.getTokenType());
             docData.put("username", token.getUsername());
@@ -153,8 +153,8 @@ public class UserService {
             Firestore dbFirestore = FirestoreClient.getFirestore();
 
             Map<String, Object> docData = new HashMap<>();
-            docData.put("expires", token.getExpires());
-            docData.put("issued", token.getIssued());
+            docData.put("expires", String.valueOf(token.getExpires()));
+            docData.put("issued", String.valueOf(token.getIssued()));
             docData.put("token", token.getAccessToken());
             docData.put("tokenType", token.getTokenType());
             docData.put("username", token.getUsername());
