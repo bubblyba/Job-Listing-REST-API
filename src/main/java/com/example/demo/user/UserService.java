@@ -96,6 +96,18 @@ public class UserService {
             return false;
         }
     }
+    public boolean tokenUserExists(String email) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference docRef = dbFirestore.collection("authToken").document(email);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     //TODO update database to confirm user has logged in
     public String userLogin(String email, String password) throws ExecutionException, InterruptedException {
         mAuth = FirebaseAuth.getInstance();
@@ -121,11 +133,39 @@ public class UserService {
 
 
     }
-    public Token generateToken(String email) throws FirebaseAuthException {
+    public Token generateToken(String email) throws FirebaseAuthException, ExecutionException, InterruptedException {
         LocalDateTime localDateTime = LocalDateTime.now();
         Token token = new Token(generateCustomToken(email),"bearer",email,localDateTime,localDateTime.plusMinutes(15));
+        if(tokenUserExists(email)){
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("expires", token.getExpires());
+            docData.put("issued", token.getIssued());
+            docData.put("token", token.getAccessToken());
+            docData.put("tokenType", token.getTokenType());
+            docData.put("username", token.getUsername());
+
+            // Add a new document in collection "users" with the given email
+            dbFirestore.collection("authToken").document(token.getUsername()).update(docData);
+        }
+        else{
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("expires", token.getExpires());
+            docData.put("issued", token.getIssued());
+            docData.put("token", token.getAccessToken());
+            docData.put("tokenType", token.getTokenType());
+            docData.put("username", token.getUsername());
+
+            // Add a new document in collection "users" with the given email
+            dbFirestore.collection("authToken").document(token.getUsername()).set(docData);
+        }
         return token;
     }
+
+
 }
 
 
