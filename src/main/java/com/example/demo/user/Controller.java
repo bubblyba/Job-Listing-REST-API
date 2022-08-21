@@ -1,8 +1,14 @@
 package com.example.demo.user;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.gson.JsonElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +50,13 @@ public class Controller {
 
         return userService.generateEmailLink(email);
     }
+    @PostMapping("/validateAuthToken")
+    public String validateAuthToken(@RequestBody ValidateAuthTokenInput input) throws FirebaseAuthException, ExecutionException, InterruptedException, IOException, ParseException {
 
+        return(userService.validateAuthToken(input.getToken(),input.getUsername()));
+
+
+    }
 
 
     }

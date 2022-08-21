@@ -4,27 +4,29 @@ package com.example.demo.user;
 import java.time.LocalDateTime;
 
 public class Token {
-    String accessToken;
+    String token;
     String tokenType;
     String username;
-    LocalDateTime issued;
-    LocalDateTime expires;
+    String issued;
+    String expires;
 
-    public Token(){}
-    public Token(String accessToken, String tokenType, String username,LocalDateTime issued, LocalDateTime expires) {
-        this.accessToken = accessToken;
+    public Token() {
+    }
+
+    public Token(String token, String tokenType, String username, String issued, String expires) {
+        this.token = token;
         this.tokenType = tokenType;
         this.username = username;
         this.issued = issued;
         this.expires = expires;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getToken() {
+        return token;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getTokenType() {
@@ -43,19 +45,20 @@ public class Token {
         this.username = username;
     }
 
-    public LocalDateTime getIssued() {
+    public String getIssued() {
         return issued;
     }
 
-    public void setIssued(LocalDateTime issued) {
+    public void setIssued(String issued) {
         this.issued = issued;
     }
 
-    public LocalDateTime getExpires() {
+    public String getExpires() {
         return expires;
     }
 
-    public void setExpires(LocalDateTime expires) {
+    public void setExpires(String expires) {
         this.expires = expires;
     }
 }
+
