@@ -51,7 +51,7 @@ public class Controller {
         return userService.generateEmailLink(email);
     }
     @PostMapping("/validateAuthToken")
-    public String validateAuthToken(@RequestBody ValidateAuthTokenInput input) throws FirebaseAuthException, ExecutionException, InterruptedException, IOException, ParseException {
+    public AccessToken validateAuthToken(@RequestBody ValidateAuthTokenInput input) throws FirebaseAuthException, ExecutionException, InterruptedException, IOException, ParseException {
 
         return(userService.validateAuthToken(input.getToken(),input.getUsername()));
 

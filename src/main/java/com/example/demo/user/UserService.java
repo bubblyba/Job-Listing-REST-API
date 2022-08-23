@@ -58,7 +58,6 @@ public class UserService {
             return i.getLocalizedMessage();
         }
         //create user using the email and password
-        mAuth.createUser(request);
         //puts all the information in the user object into a Map object
         Map<String, Object> docData = new HashMap<>();
         docData.put("email", user.getEmail());
@@ -121,6 +120,18 @@ public class UserService {
         }
     }
 
+    public boolean accessTokenUserExists(String email) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference docRef = dbFirestore.collection("accessToken").document(email);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //TODO update database to confirm user has logged in
     public String userLogin(String email, String password) throws ExecutionException, InterruptedException {
         mAuth = FirebaseAuth.getInstance();
@@ -151,10 +162,30 @@ public class UserService {
         ZoneId zone = ZoneId.of("UTC");
 
         LocalDateTime localDateTime = LocalDateTime.now(zone);
+        ArrayList<User> users = new ArrayList<>();
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // asynchronously retrieve all documents
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection("users").get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        String tokenType = "";
+        for (QueryDocumentSnapshot document : documents) {
+            User user = new User();
+            User tempUser = document.toObject(User.class);
 
-        Token token = new Token(generateCustomToken(email), "bearer", email, String.valueOf(localDateTime), String.valueOf(LocalDateTime.parse(String.valueOf(localDateTime)).plusMinutes(15)));
+            if(tempUser.getEmail().equals(email)){
+                if(tempUser.getUserType() == 2){
+                    tokenType += "job";
+                }
+                else if(tempUser.getUserType() == 1){
+                    tokenType += "hire";
+                }
+
+            }
+        }
+
+        Token token = new Token(generateCustomToken(email), tokenType, email, String.valueOf(localDateTime), String.valueOf(LocalDateTime.parse(String.valueOf(localDateTime)).plusMinutes(15)));
         if (tokenUserExists(email)) {
-            Firestore dbFirestore = FirestoreClient.getFirestore();
+             dbFirestore = FirestoreClient.getFirestore();
 
             Map<String, Object> docData = new HashMap<>();
             docData.put("expires", String.valueOf(token.getExpires()));
@@ -166,7 +197,7 @@ public class UserService {
             // Add a new document in collection "users" with the given email
             dbFirestore.collection("authToken").document(token.getUsername()).update(docData);
         } else {
-            Firestore dbFirestore = FirestoreClient.getFirestore();
+             dbFirestore = FirestoreClient.getFirestore();
 
             Map<String, Object> docData = new HashMap<>();
             docData.put("expires", String.valueOf(token.getExpires()));
@@ -182,7 +213,7 @@ public class UserService {
     }
 
 
-    public String validateAuthToken(String authToken, String username) throws ExecutionException, InterruptedException, ParseException {
+    public AccessToken validateAuthToken(String authToken, String username) throws ExecutionException, InterruptedException, ParseException, FirebaseAuthException {
         ArrayList<Token> tokens = new ArrayList<>();
         Firestore dbFirestore = FirestoreClient.getFirestore();
         // asynchronously retrieve all documents
@@ -198,6 +229,8 @@ public class UserService {
             toke.setExpires(fireToke.getExpires());
             toke.setIssued(fireToke.getIssued());
             toke.setTokenType(fireToke.getTokenType());
+            System.out.println(fireToke.getUsername());
+            System.out.println(fireToke.getToken());
 
 
             tokens.add(toke);
@@ -215,12 +248,54 @@ public class UserService {
                 System.out.println("time now: " + localDateTime);
                 System.out.println("expire time: " + tokens.get(x).getExpires());
                 if(isAfter){
-                    return "expired";
+                    AccessToken accessToken = new AccessToken();
+                    accessToken.setUsername("token expired");
+                    return accessToken;
                 }
+                else{
+
+                    AccessToken accessToken = new AccessToken(tokens.get(x).getUsername(),String.valueOf(generateCustomToken(username)),String.valueOf(generateCustomToken(username + "code")),String.valueOf(localDateTime), String.valueOf(LocalDateTime.parse(String.valueOf(localDateTime)).plusMinutes(15)),tokens.get(x).getTokenType());
+                    if (accessTokenUserExists(tokens.get(x).getUsername())) {
+                        dbFirestore = FirestoreClient.getFirestore();
+//
+                        Map<String, Object> docData = new HashMap<>();
+                        docData.put("username", accessToken.getUsername());
+                        docData.put("refreshToken", accessToken.getRefreshToken());
+                        docData.put("accessToken", accessToken.getAccessToken());
+                        docData.put("issued", accessToken.getIssued());
+                        docData.put("expires", accessToken.getExpires());
+                        docData.put("tokenType", accessToken.getTokenType());
+
+                        // Add a new document in collection "users" with the given email
+                        dbFirestore.collection("accessToken").document(tokens.get(x).getUsername()).update(docData);
+                    } else {
+                        System.out.println("got here");
+                        dbFirestore = FirestoreClient.getFirestore();
+//
+                        Map<String, Object> docData = new HashMap<>();
+                        docData.put("username", accessToken.getUsername());
+                        docData.put("refreshToken", accessToken.getRefreshToken());
+                        docData.put("accessToken", accessToken.getAccessToken());
+                        docData.put("issued", accessToken.getIssued());
+                        docData.put("expires", accessToken.getExpires());
+                        docData.put("tokenType", accessToken.getTokenType());
+
+                        // Add a new document in collection "users" with the given email
+                        dbFirestore.collection("accessToken").document(tokens.get(x).getUsername()).set(docData);
+                    }
+                    return accessToken;
+
+                }
+
             }
+            AccessToken accessToken = new AccessToken();
+            accessToken.setUsername("invalid token");
+            return accessToken;
 
         }
-        return "chillin";
+        AccessToken accessToken = new AccessToken();
+        accessToken.setUsername("invalid credentials");
+        return accessToken;
 
     }
 
