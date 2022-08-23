@@ -287,9 +287,7 @@ public class UserService {
                 }
 
             }
-            AccessToken accessToken = new AccessToken();
-            accessToken.setUsername("invalid token");
-            return accessToken;
+
 
         }
         AccessToken accessToken = new AccessToken();
