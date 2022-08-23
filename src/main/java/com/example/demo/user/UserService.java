@@ -269,7 +269,6 @@ public class UserService {
                         // Add a new document in collection "users" with the given email
                         dbFirestore.collection("accessToken").document(tokens.get(x).getUsername()).update(docData);
                     } else {
-                        System.out.println("got here");
                         dbFirestore = FirestoreClient.getFirestore();
 //
                         Map<String, Object> docData = new HashMap<>();
@@ -298,6 +297,36 @@ public class UserService {
         return accessToken;
 
     }
+    public User getUserByAccessToken(String accessToken) throws ExecutionException, InterruptedException {
+        ArrayList<AccessToken> accessTokens = new ArrayList<>();
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // asynchronously retrieve all documents
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection("accessToken").get();
+// future.get() blocks on response
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        for (QueryDocumentSnapshot document : documents) {
+            AccessToken toke = new AccessToken();
+            AccessToken fireToke = document.toObject(AccessToken.class);
+            toke.setUsername(fireToke.getUsername());
+            toke.setAccessToken(fireToke.getAccessToken());
+
+
+            accessTokens.add(toke);
+        }
+        for (int x = 0; x < accessTokens.size(); x++) {
+
+
+            if(accessTokens.get(x).getAccessToken().equals(accessToken)){
+                return getUser(accessTokens.get(x).getUsername());
+            }
+        }
+        User user = new User();
+        user.setEmail("internal error");
+        return user;
+
+    }
+
 
 
 

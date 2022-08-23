@@ -58,5 +58,12 @@ public class Controller {
 
     }
 
+    @PostMapping("/getUserByAccessToken")
+    public User getByAccessToken(@RequestBody SingleString string) throws ExecutionException, InterruptedException {
+        SingleString accessToken = new SingleString(string.getString());
+        return userService.getUserByAccessToken(accessToken.getString());
+    }
+
+
 
     }
