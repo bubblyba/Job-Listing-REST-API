@@ -3,7 +3,7 @@ package com.example.demo.user;
 public class ValidateAuthTokenInput {
     String username;
     String token;
-
+    public ValidateAuthTokenInput(){}
     public ValidateAuthTokenInput(String username, String token) {
         this.username = username;
         this.token = token;
