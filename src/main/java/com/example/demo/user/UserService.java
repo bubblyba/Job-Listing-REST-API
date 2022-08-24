@@ -65,6 +65,12 @@ public class UserService {
         docData.put("userType", user.getUserType());
         // Add a new document in collection "users" with the given email
         dbFirestore.collection(columnName).document(user.getEmail()).set(docData);
+        Map<String, Object> docData2 = new HashMap<>();
+        docData2.put("username", user.getEmail());
+        docData2.put("profileCreated", false);
+        dbFirestore = FirestoreClient.getFirestore();
+        dbFirestore.collection("userStatus").document(user.getEmail()).set(docData2);
+
         return "User created";
     }
 
@@ -324,6 +330,30 @@ public class UserService {
         return user;
 
     }
+    public boolean getUserProfileCreated(String username) throws ExecutionException, InterruptedException {
+        ArrayList<UserStatus> statuses = new ArrayList<>();
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // asynchronously retrieve all documents
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection("userStatus").get();
+// future.get() blocks on response
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        for (QueryDocumentSnapshot document : documents) {
+            UserStatus status = new UserStatus();
+            UserStatus fireStatus = document.toObject(UserStatus.class);
+            status.setProfileCreated(fireStatus.isProfileCreated());
+
+
+            statuses.add(status);
+        }
+       for(int x = 0;x<statuses.size();x++){
+           if(statuses.get(x).getUsername().equals(username)){
+               return statuses.get(x).isProfileCreated();
+           }
+       }
+       return false;
+    }
+
 
 
 
