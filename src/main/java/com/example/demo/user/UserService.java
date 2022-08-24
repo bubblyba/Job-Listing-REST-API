@@ -342,16 +342,20 @@ public class UserService {
             UserStatus status = new UserStatus();
             UserStatus fireStatus = document.toObject(UserStatus.class);
             status.setProfileCreated(fireStatus.isProfileCreated());
+            status.setUsername(fireStatus.getUsername());
+
 
 
             statuses.add(status);
         }
        for(int x = 0;x<statuses.size();x++){
            if(statuses.get(x).getUsername().equals(username)){
+
                return statuses.get(x).isProfileCreated();
            }
        }
-       return false;
+
+        return false;
     }
 
 

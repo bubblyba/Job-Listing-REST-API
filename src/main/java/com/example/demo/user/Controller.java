@@ -64,6 +64,12 @@ public class Controller {
         return userService.getUserByAccessToken(accessToken.getString());
     }
 
+    @PostMapping("/getUserProfileCreated")
+    public boolean getProfileCreated(@RequestBody SingleString string) throws ExecutionException, InterruptedException {
+        SingleString username = new SingleString(string.getString());
+        System.out.println(username.getString());
+        return userService.getUserProfileCreated(username.getString());
 
+    }
 
     }
