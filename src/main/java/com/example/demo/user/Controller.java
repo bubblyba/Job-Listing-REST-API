@@ -70,5 +70,8 @@ public class Controller {
         return userService.getUserProfileCreated(user.getUsername(),user.getToken());
 
     }
-
+    @PostMapping("addWorkerProfile")
+    public String addWorkerProfile(@RequestBody WorkerProfile profile) throws ExecutionException, InterruptedException {
+        return userService.addProfile(profile);
+    }
     }

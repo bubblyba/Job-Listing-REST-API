@@ -1,27 +1,16 @@
 package com.example.demo.user;
 
-import com.example.demo.user.User;
-import com.google.api.client.util.DateTime;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.internal.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.protobuf.Api;
-import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLOutput;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -411,8 +400,67 @@ public class UserService {
 
         return "internal issue";
     }
+    public boolean workerProfileExists(String username) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        DocumentReference docRef = dbFirestore.collection("workerProfile").document(username);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public String addProfile(WorkerProfile profile) throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+
+        if(workerProfileExists(profile.username)){
+
+            dbFirestore = FirestoreClient.getFirestore();
+
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("bio", String.valueOf(profile.getBio()));
+            docData.put("displayName", String.valueOf(profile.getDisplayName()));
+            docData.put("gender", profile.getGender());
+            docData.put("githubUsername", profile.getGithubUsername());
+            docData.put("location",profile.getLocation());
+            docData.put("nationality", profile.getNationality());
+            docData.put("preferredAnnualPay", profile.getPreferredAnnualPay());
+            docData.put("preferredMonthlyPay", profile.getPreferredMonthlyPay());
+            docData.put("residence", profile.getResidence());
+            docData.put("skills", profile.getSkills());
+            docData.put("username", profile.getUsername());
+            docData.put("website", profile.getWebsite());
+
+            // Add a new document in collection "users" with the given email
+            dbFirestore.collection("workerProfile").document(profile.getUsername()).update(docData);
+            return "profile created";
+        }
+        else{
+            dbFirestore = FirestoreClient.getFirestore();
+
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("bio", String.valueOf(profile.getBio()));
+            docData.put("displayName", String.valueOf(profile.getDisplayName()));
+            docData.put("gender", profile.getGender());
+            docData.put("githubUsername", profile.getGithubUsername());
+            docData.put("location",profile.getLocation());
+            docData.put("nationality", profile.getNationality());
+            docData.put("preferredAnnualPay", profile.getPreferredAnnualPay());
+            docData.put("preferredMonthlyPay", profile.getPreferredMonthlyPay());
+            docData.put("residence", profile.getResidence());
+            docData.put("skills", profile.getSkills());
+            docData.put("username", profile.getUsername());
+            docData.put("website", profile.getWebsite());
+
+            // Add a new document in collection "users" with the given email
+            dbFirestore.collection("workerProfile").document(profile.getUsername()).set(docData);
+            return "profile created";
+
+        }
 
 
+    }
 
 
 
