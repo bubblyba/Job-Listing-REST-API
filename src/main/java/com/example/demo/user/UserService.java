@@ -301,6 +301,54 @@ public class UserService {
         return accessToken;
 
     }
+    public String validateAccessToken(String username, String accessToken) throws ExecutionException, InterruptedException, ParseException, FirebaseAuthException {
+        ArrayList<AccessToken> tokens = new ArrayList<>();
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        // asynchronously retrieve all documents
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection("accessToken").get();
+// future.get() blocks on response
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        for (QueryDocumentSnapshot document : documents) {
+            AccessToken toke = new AccessToken();
+            AccessToken fireToke = document.toObject(AccessToken.class);
+            toke.setUsername(fireToke.getUsername());
+            System.out.println(fireToke.getUsername());
+            toke.setRefreshToken(fireToke.getRefreshToken());
+            toke.setAccessToken(fireToke.getAccessToken());
+            System.out.println(fireToke.getAccessToken());
+            toke.setTokenType(fireToke.getTokenType());
+            toke.setExpires(fireToke.getExpires());
+            toke.setIssued(fireToke.getIssued());
+
+            tokens.add(toke);
+        }
+
+        for(int x =0;x<tokens.size();x++){
+
+            if(String.valueOf(tokens.get(x).getAccessToken()).equals(accessToken)&&String.valueOf(tokens.get(x).getUsername()).equals(username)){
+                ZoneId zone = ZoneId.of("UTC");
+
+                LocalDateTime localDateTime = LocalDateTime.now(zone);
+
+
+
+                boolean isAfter = localDateTime.isAfter(LocalDateTime.parse(tokens.get(x).getExpires()));
+
+                if(isAfter){
+                    AccessToken accessTok = new AccessToken();
+                    return ("token expired");
+
+                }
+                else{
+                    return "token valid";
+                }
+            }
+        }
+        return "invalid token";
+
+
+    }
     public User getUserByAccessToken(String accessToken) throws ExecutionException, InterruptedException {
         ArrayList<AccessToken> accessTokens = new ArrayList<>();
         Firestore dbFirestore = FirestoreClient.getFirestore();
@@ -330,7 +378,12 @@ public class UserService {
         return user;
 
     }
-    public boolean getUserProfileCreated(String username) throws ExecutionException, InterruptedException {
+    public String getUserProfileCreated(String username, String accessToken) throws ExecutionException, InterruptedException, ParseException, FirebaseAuthException {
+        System.out.println(validateAccessToken(username,accessToken));
+        if(!(validateAccessToken(username,accessToken).equals("token valid"))){
+            return "invalid token";
+        }
+
         ArrayList<UserStatus> statuses = new ArrayList<>();
         Firestore dbFirestore = FirestoreClient.getFirestore();
         // asynchronously retrieve all documents
@@ -348,14 +401,15 @@ public class UserService {
 
             statuses.add(status);
         }
+
        for(int x = 0;x<statuses.size();x++){
            if(statuses.get(x).getUsername().equals(username)){
 
-               return statuses.get(x).isProfileCreated();
+               return String.valueOf(statuses.get(x).isProfileCreated());
            }
        }
 
-        return false;
+        return "internal issue";
     }
 
 

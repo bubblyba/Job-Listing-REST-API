@@ -65,10 +65,9 @@ public class Controller {
     }
 
     @PostMapping("/getUserProfileCreated")
-    public boolean getProfileCreated(@RequestBody SingleString string) throws ExecutionException, InterruptedException {
-        SingleString username = new SingleString(string.getString());
-        System.out.println(username.getString());
-        return userService.getUserProfileCreated(username.getString());
+    public String getProfileCreated(@RequestBody ValidateAuthTokenInput user) throws ExecutionException, InterruptedException, ParseException, FirebaseAuthException {
+
+        return userService.getUserProfileCreated(user.getUsername(),user.getToken());
 
     }
 
