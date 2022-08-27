@@ -32,7 +32,7 @@ public class ProfileCreatedInput {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(String token1) {
+        this.token = token1;
     }
 }
