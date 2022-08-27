@@ -74,4 +74,9 @@ public class Controller {
     public String addWorkerProfile(@RequestBody WorkerProfile profile) throws ExecutionException, InterruptedException {
         return userService.addProfile(profile);
     }
+
+    @PostMapping("updateUserProfileCreated")
+    public String updateUserProfileCreated(@RequestBody ValidateAuthTokenInput input) throws ParseException, ExecutionException, InterruptedException, FirebaseAuthException {
+        return(userService.updateUserProfileCreated(input.isProfileCreated(), input.getUsername(),input.getToken()));
+    }
     }

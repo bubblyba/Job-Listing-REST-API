@@ -462,6 +462,26 @@ public class UserService {
 
     }
 
+    public String updateUserProfileCreated(boolean profileCreated,String username, String accessToken) throws ParseException, ExecutionException, InterruptedException, FirebaseAuthException {
+        if(!(validateAccessToken(username, accessToken).equals("token valid"))){
+            return "invalid credentials";
+        }
+        else {
+            Firestore dbFirestore = FirestoreClient.getFirestore();
+            dbFirestore = FirestoreClient.getFirestore();
+
+            Map<String, Object> docData = new HashMap<>();
+            docData.put("profileCreated", profileCreated);
+            docData.put("username", username);
+
+
+            // Add a new document in collection "users" with the given email
+            dbFirestore.collection("userStatus").document(username).update(docData);
+            return "profile updated";
+        }
+
+    }
+
 
 
 

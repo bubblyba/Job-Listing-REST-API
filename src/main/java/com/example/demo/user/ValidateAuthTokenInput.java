@@ -3,8 +3,22 @@ package com.example.demo.user;
 public class ValidateAuthTokenInput {
     String username;
     String token;
+    boolean profileCreated;
+
+    public boolean isProfileCreated() {
+        return profileCreated;
+    }
+
+    public void setProfileCreated(boolean profileCreated) {
+        this.profileCreated = profileCreated;
+    }
+
     public ValidateAuthTokenInput(){}
     public ValidateAuthTokenInput(String username, String token) {
+        this.username = username;
+        this.token = token;
+    }
+    public ValidateAuthTokenInput(String username, String token,boolean profileCreated) {
         this.username = username;
         this.token = token;
     }
