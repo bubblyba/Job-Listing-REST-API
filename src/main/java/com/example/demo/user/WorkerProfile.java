@@ -1,6 +1,7 @@
 package com.example.demo.user;
 
 public class WorkerProfile {
+    String accessToken;
     String bio;
     String displayName;
     String gender;
@@ -16,7 +17,8 @@ public class WorkerProfile {
 
     public WorkerProfile(){}
 
-    public WorkerProfile(String bio, String displayName, String gender, String githubUsername, String location, String nationality, double preferredAnnualPay, double preferredMonthlyPay, String residence, String skills, String username, String website) {
+    public WorkerProfile(String accessToken, String bio, String displayName, String gender, String githubUsername, String location, String nationality, double preferredAnnualPay, double preferredMonthlyPay, String residence, String skills, String username, String website) {
+        this.accessToken = accessToken;
         this.bio = bio;
         this.displayName = displayName;
         this.gender = gender;
@@ -29,6 +31,14 @@ public class WorkerProfile {
         this.skills = skills;
         this.username = username;
         this.website = website;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public String getBio() {

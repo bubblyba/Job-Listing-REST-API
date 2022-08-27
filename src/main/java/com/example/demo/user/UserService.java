@@ -411,52 +411,56 @@ public class UserService {
             return false;
         }
     }
-    public String addProfile(WorkerProfile profile) throws ExecutionException, InterruptedException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-
-        if(workerProfileExists(profile.username)){
-
-            dbFirestore = FirestoreClient.getFirestore();
-
-            Map<String, Object> docData = new HashMap<>();
-            docData.put("bio", String.valueOf(profile.getBio()));
-            docData.put("displayName", String.valueOf(profile.getDisplayName()));
-            docData.put("gender", profile.getGender());
-            docData.put("githubUsername", profile.getGithubUsername());
-            docData.put("location",profile.getLocation());
-            docData.put("nationality", profile.getNationality());
-            docData.put("preferredAnnualPay", profile.getPreferredAnnualPay());
-            docData.put("preferredMonthlyPay", profile.getPreferredMonthlyPay());
-            docData.put("residence", profile.getResidence());
-            docData.put("skills", profile.getSkills());
-            docData.put("username", profile.getUsername());
-            docData.put("website", profile.getWebsite());
-
-            // Add a new document in collection "users" with the given email
-            dbFirestore.collection("workerProfile").document(profile.getUsername()).update(docData);
-            return "profile created";
+    public String addProfile(WorkerProfile profile,String accessToken) throws ExecutionException, InterruptedException, ParseException, FirebaseAuthException {
+        if(!(validateAccessToken(profile.getUsername(), accessToken).equals("token valid"))){
+            return "invalid credentials";
         }
-        else{
-            dbFirestore = FirestoreClient.getFirestore();
+        else {
+            Firestore dbFirestore = FirestoreClient.getFirestore();
 
-            Map<String, Object> docData = new HashMap<>();
-            docData.put("bio", String.valueOf(profile.getBio()));
-            docData.put("displayName", String.valueOf(profile.getDisplayName()));
-            docData.put("gender", profile.getGender());
-            docData.put("githubUsername", profile.getGithubUsername());
-            docData.put("location",profile.getLocation());
-            docData.put("nationality", profile.getNationality());
-            docData.put("preferredAnnualPay", profile.getPreferredAnnualPay());
-            docData.put("preferredMonthlyPay", profile.getPreferredMonthlyPay());
-            docData.put("residence", profile.getResidence());
-            docData.put("skills", profile.getSkills());
-            docData.put("username", profile.getUsername());
-            docData.put("website", profile.getWebsite());
+            if (workerProfileExists(profile.username)) {
 
-            // Add a new document in collection "users" with the given email
-            dbFirestore.collection("workerProfile").document(profile.getUsername()).set(docData);
-            return "profile created";
+                dbFirestore = FirestoreClient.getFirestore();
 
+                Map<String, Object> docData = new HashMap<>();
+                docData.put("bio", String.valueOf(profile.getBio()));
+                docData.put("displayName", String.valueOf(profile.getDisplayName()));
+                docData.put("gender", profile.getGender());
+                docData.put("githubUsername", profile.getGithubUsername());
+                docData.put("location", profile.getLocation());
+                docData.put("nationality", profile.getNationality());
+                docData.put("preferredAnnualPay", profile.getPreferredAnnualPay());
+                docData.put("preferredMonthlyPay", profile.getPreferredMonthlyPay());
+                docData.put("residence", profile.getResidence());
+                docData.put("skills", profile.getSkills());
+                docData.put("username", profile.getUsername());
+                docData.put("website", profile.getWebsite());
+
+                // Add a new document in collection "users" with the given email
+                dbFirestore.collection("workerProfile").document(profile.getUsername()).update(docData);
+                return "profile created";
+            } else {
+                dbFirestore = FirestoreClient.getFirestore();
+
+                Map<String, Object> docData = new HashMap<>();
+                docData.put("bio", String.valueOf(profile.getBio()));
+                docData.put("displayName", String.valueOf(profile.getDisplayName()));
+                docData.put("gender", profile.getGender());
+                docData.put("githubUsername", profile.getGithubUsername());
+                docData.put("location", profile.getLocation());
+                docData.put("nationality", profile.getNationality());
+                docData.put("preferredAnnualPay", profile.getPreferredAnnualPay());
+                docData.put("preferredMonthlyPay", profile.getPreferredMonthlyPay());
+                docData.put("residence", profile.getResidence());
+                docData.put("skills", profile.getSkills());
+                docData.put("username", profile.getUsername());
+                docData.put("website", profile.getWebsite());
+
+                // Add a new document in collection "users" with the given email
+                dbFirestore.collection("workerProfile").document(profile.getUsername()).set(docData);
+                return "profile created";
+
+            }
         }
 
 

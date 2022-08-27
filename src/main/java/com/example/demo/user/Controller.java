@@ -71,8 +71,8 @@ public class Controller {
 
     }
     @PostMapping("addWorkerProfile")
-    public String addWorkerProfile(@RequestBody WorkerProfile profile) throws ExecutionException, InterruptedException {
-        return userService.addProfile(profile);
+    public String addWorkerProfile(@RequestBody WorkerProfile profile) throws ExecutionException, InterruptedException, ParseException, FirebaseAuthException {
+        return userService.addProfile(profile,profile.getAccessToken());
     }
 
     @PostMapping("updateUserProfileCreated")
