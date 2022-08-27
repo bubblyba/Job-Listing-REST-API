@@ -76,7 +76,8 @@ public class Controller {
     }
 
     @PostMapping("updateUserProfileCreated")
-    public String updateUserProfileCreated(@RequestBody ValidateAuthTokenInput input) throws ParseException, ExecutionException, InterruptedException, FirebaseAuthException {
+    public String updateUserProfileCreated(@RequestBody ProfileCreatedInput input) throws ParseException, ExecutionException, InterruptedException, FirebaseAuthException {
+
         return(userService.updateUserProfileCreated(input.isProfileCreated(), input.getUsername(),input.getToken()));
     }
     }
