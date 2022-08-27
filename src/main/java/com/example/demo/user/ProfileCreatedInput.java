@@ -5,6 +5,7 @@ public class ProfileCreatedInput {
     String username;
     String token;
 
+    public ProfileCreatedInput(){}
     public ProfileCreatedInput(boolean isProfileCreated, String username, String token) {
         this.isProfileCreated = isProfileCreated;
         this.username = username;
